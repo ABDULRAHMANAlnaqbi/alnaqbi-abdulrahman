@@ -1,0 +1,228 @@
+from datetime import date
+
+class Customer:
+    def __init__(self, customer_id, name, address, phone_number, email):
+        """
+        Initialize a Customer object.
+        
+        :param customer_id: Unique identifier for the customer.
+        :param name: Customer's full name.
+        :param address: Customer's delivery address.
+        :param phone_number: Customer's phone number.
+        :param email: Customer's email address.
+        """
+        self.__customer_id = customer_id
+        self.__name = name
+        self.__address = address
+        self.__phone_number = phone_number
+        self.__email = email
+
+    def get_customer_id(self):
+        return self.__customer_id
+
+    def get_name(self):
+        return self.__name
+
+    def get_address(self):
+        return self.__address
+
+    def get_phone_number(self):
+        return self.__phone_number
+
+    def get_email(self):
+        return self.__email
+
+    def set_address(self, new_address):
+        self.__address = new_address
+
+    def set_phone_number(self, new_phone_number):
+        self.__phone_number = new_phone_number
+
+    def update_email(self, new_email):
+        # Update the customer's email address
+        pass
+
+
+class Driver:
+    def __init__(self, driver_id, name, vehicle, license_number, contact_number):
+        """
+        Initialize a Driver object.
+        
+        :param driver_id: Unique identifier for the driver.
+        :param name: Driver's full name.
+        :param vehicle: Vehicle used by the driver.
+        :param license_number: Driver's license number.
+        :param contact_number: Driver's contact number.
+        """
+        self.__driver_id = driver_id
+        self.__name = name
+        self.__vehicle = vehicle
+        self.__license_number = license_number
+        self.__contact_number = contact_number
+
+    def get_driver_id(self):
+        return self.__driver_id
+
+    def get_name(self):
+        return self.__name
+
+    def get_vehicle(self):
+        return self.__vehicle
+
+    def get_license_number(self):
+        return self.__license_number
+
+    def get_contact_number(self):
+        return self.__contact_number
+
+    def set_vehicle(self, new_vehicle):
+        self.__vehicle = new_vehicle
+
+    def update_contact_number(self, new_contact_number):
+        # Update the driver's contact number
+        pass
+
+
+class DeliveryOrder:
+    order_counter = 1  # Static counter for order numbers
+    reference_counter = 1  # Static counter for reference numbers
+
+    def __init__(self, customer, address, order_date, total_cost):
+        """
+        Initialize a DeliveryOrder object.
+        
+        :param customer: Customer object associated with the order.
+        :param address: Delivery address for the order.
+        :param order_date: Date the order was placed.
+        :param total_cost: Total cost of the order.
+        """
+        self.__order_id = f"ORD{DeliveryOrder.order_counter:03d}"
+        DeliveryOrder.order_counter += 1
+        self.__reference_number = f"DN{DeliveryOrder.reference_counter:03d}"
+        DeliveryOrder.reference_counter += 1
+        self.__customer = customer
+        self.__address = address
+        self.__order_date = order_date
+        self.__total_cost = total_cost
+        self.__delivery_method = "Courier"       # Hardcoded for example
+        self.__package_dimensions = "N/A"        # Hardcoded for example
+        self.__total_weight = "7 kg"              # Hardcoded for example
+        self.__items = [
+            {"code": "ITM001", "description": "Wireless Keyboard", "quantity": 1, "unit_price": 100.00},
+            {"code": "ITM002", "description": "Wirless Mouse & Pad Set", "quantity": 1, "unit_price": 75.00},
+            {"code": "ITM003", "description": "Laptop Cooling Pad", "quantity": 1, "unit_price": 120.00},
+            {"code": "ITM004", "description": "Camera Lock", "quantity": 3, "unit_price": 15.00}
+        ]
+
+
+    def get_order_id(self):
+        return self.__order_id
+
+    def get_customer(self):
+        return self.__customer
+
+    def get_address(self):
+        return self.__address
+
+    def get_order_date(self):
+        return self.__order_date
+
+    def get_total_cost(self):
+        return self.__total_cost
+
+    def get_reference_number(self):
+        return self.__reference_number
+
+    def get_delivery_method(self):
+        return self.__delivery_method
+
+    def get_package_dimensions(self):
+        return self.__package_dimensions
+
+    def get_total_weight(self):
+        return self.__total_weight
+
+    def get_items(self):
+        return self.__items
+
+    def calculate_total_cost(self):
+        # Calculate the total cost of the order based on items and discounts
+        pass
+
+
+class DeliveryNote:
+    def __init__(self, delivery_order):
+        """
+        Initialize a DeliveryNote object.
+        
+        :param delivery_order: DeliveryOrder object associated with the note.
+        """
+        self.__delivery_order = delivery_order
+        self.__taxes_and_fees = 13.50  #Hardcoded based on the screenshot
+
+    def get_delivery_order(self):
+        return self.__delivery_order
+
+    def generate_note(self):
+        # Generate a formatted delivery note based on the order details
+        order = self.__delivery_order
+        customer = order.get_customer()
+
+        note = f"""
+Delivery Note
+Thank you for using our delivery service! Please print your delivery receipt and present it upon receiving your items.
+
+Recipient Details:
+Name: {customer.get_name()}
+Contact: {customer.get_email()}
+Delivery Address: {order.get_address()}
+
+Delivery Information:
+Order Number: {order.get_order_id()}
+Reference Number: {order.get_reference_number()}
+Delivery Date: {order.get_order_date().strftime("%B %d, %Y")}
+Delivery Method: {order.get_delivery_method()}
+Package Dimensions: {order.get_package_dimensions()}
+Total Weight: {order.get_total_weight()}
+
+Summary of Items Delivered:
+-------------------------------------------------------------------
+Item Code  Description             Quantity  Unit Price (AED)  Total Price (AED)
+-------------------------------------------------------------------
+"""
+        total_cost = 0
+        for item in order.get_items():
+            item_total = item["quantity"] * item["unit_price"]
+            total_cost += item_total
+            note += f"{item['code']:<9}  {item['description']:<22}  {item['quantity']:<8}  {item['unit_price']:<16.2f}  {item_total:<16.2f}\n"
+
+        note += f"""-------------------------------------------------------------------
+Subtotal: AED {total_cost:.2f}
+Taxes and Fees: AED {self.__taxes_and_fees:.2f}
+Total Charges: AED {total_cost + self.__taxes_and_fees:.2f}
+"""
+        return note
+
+
+def main():
+    print("Welcome to the Delivery Management System!")
+    
+    # Input customer details
+    name = input("Enter Customer Name: ")
+    email = input("Enter Customer Email: ")
+    address = input("Enter Customer Address: ")
+
+    customer = Customer("CUS001", name, address, "9876543210", email) #Hardcoded customer_id and phone number
+    
+    # Input order details
+    order_date = date(2025, 1, 25)  # Hardcoded order date (January 25, 2025)
+
+    order = DeliveryOrder(customer, address, order_date, 270.0) #Hardcoded total cost
+    
+    delivery_note = DeliveryNote(order)
+    
+    print("\nDelivery Note:")
+    print(delivery_note.generate_note())
+
+if __name__ == "__main__":
+    main()
